@@ -1,0 +1,22 @@
+{
+    "name": "iyoworks/dependency-sorter",
+    "description": "Sorts items according to a list of dependencies",
+    "authors": [
+    {
+        "name": "Blessing Osakue",
+        "email": "iyoworks@gmail.com"
+    }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+        },
+        "autoload": {
+            "psr-0": {
+              "Iyoworks": "src"
+              },
+          "files" : [
+            "TestCase.php"
+          ]
+      }
+  }
