@@ -12,6 +12,7 @@ class SorterTest extends TestCase {
 		parent::setUp();
 		$this->s = new Sorter;
 	}
+	
 	public function testStringDepencyList() 
 	{
 		$this->s->add( array(
@@ -44,7 +45,7 @@ class SorterTest extends TestCase {
 			'couple',
 			);
 		$this->result = $this->s->sort();
-		dd($this->result);
+
 		$this->analyze();
 		
 		$this->assertSame($this->expected, array_values($this->result), $this->msg());

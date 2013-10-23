@@ -3,6 +3,18 @@
 interface SortableInterface {
 	
 	/**
+	 * add an array of items for sorting
+	 * @return void
+	 */
+	public function add(array $item, $allowNumericKey = false);
+
+	/**
+	 * add a single item for sorting
+	 * @return void
+	 */
+	public function addItem($item, $dependsOn = null);
+
+	/**
 	 * sort the items
 	 * @return array|mixed
 	 */
@@ -20,8 +32,10 @@ interface SortableInterface {
 	 */
 	public function getMissing();
 
-	public function add($item, $dependsOn = null);
-
+	/**
+	 * get hit count list
+	 * @return array|mixed
+	 */
 	public function getHits();
 
 }
