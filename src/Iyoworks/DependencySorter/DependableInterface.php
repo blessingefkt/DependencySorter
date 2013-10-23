@@ -7,5 +7,9 @@ interface DependableInterface {
 	 */
 	public function getDependencies();
 
+	/**
+	 * get item key/identifier
+	 * @return string|mixed
+	 */
 	public function getHandle();
 }
