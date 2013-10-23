@@ -2,17 +2,76 @@
 use Iyoworks\DependencySorter\Sorter;
 use Iyoworks\DependencySorter\DependableInterface;
 
-debugOn();
 class SorterTest extends TestCase {
 	
 	/**
 	 * @var \Iyoworks\DependencySorter\SortableInterface
 	 */
 	protected $s;
-	
+	public function setUp(){
+		parent::setUp();
+		$this->s = new Sorter;
+	}
+	public function testStringDepencyList() 
+	{
+		$this->s->add( array(
+			'father' => null,
+			'mother' => 'father',
+			'couple' => 'father, mother'
+			) );
+		$this->expected = array(
+			'father',
+			'mother',
+			'couple',
+			);
+		$this->result = $this->s->sort();
+		
+		$this->analyze();
+		
+		$this->assertSame($this->expected, array_values($this->result), $this->msg());
+	}
+
+	public function testDependableDepencyList() 
+	{
+		$this->s->add( array(
+			 'father' => new SimpleDependable('father'),
+			 'mother' => new SimpleDependable('mother', 'father'),
+			 'couple' => new SimpleDependable('couple', 'mother,father'),
+			) );
+		$this->expected = array(
+			'father',
+			'mother',
+			'couple',
+			);
+		$this->result = $this->s->sort();
+		dd($this->result);
+		$this->analyze();
+		
+		$this->assertSame($this->expected, array_values($this->result), $this->msg());
+	}
+
+	public function testDependablesArrayDepencyList() 
+	{
+		$this->s->add( array(
+			new SimpleDependable('father'),
+			new SimpleDependable('mother', 'father'),
+			new SimpleDependable('couple', 'mother,father'),
+			) );
+		$this->expected = array(
+			'father',
+			'mother',
+			'couple',
+			);
+		$this->result = $this->s->sort();
+
+		$this->analyze();
+		
+		$this->assertSame($this->expected, array_values($this->result), $this->msg());
+	}
+
 	public function testSortGoodSet() 
 	{
-		$this->load(array(
+		$this->s->add( array(
 			'hello' => [],
 			'helloGalaxy' => ['helloWorld'],
 			'father' => [],
@@ -20,7 +79,7 @@ class SorterTest extends TestCase {
 			'child' => ['father', 'mother'],
 			'helloWorld' => ['hello'],
 			'family' => ['father', 'mother', 'child']
-			));
+			) );
 		$this->expected = array(
 			'hello',
 			'father',
@@ -43,13 +102,13 @@ class SorterTest extends TestCase {
 
 	public function testSortMissingSet() 
 	{
-		$this->load(array(
+		$this->s->add( array(
 			'helloWorld' => [],
 			'helloGalaxy' => ['helloWorld'],
 			'father' => [],
 			'child' => ['father', 'mother'],
 			'family' => ['father', 'mother', 'child']
-			));
+			) );
 		$this->expected = array(
 			'helloWorld',
 			'helloGalaxy',
@@ -72,14 +131,14 @@ class SorterTest extends TestCase {
 
 	public function testSortCircularSet() 
 	{
-		$this->load( array(
+		$this->s->add( array(
 			'helloWorld' => ['hello'],
 			'helloGalaxy' => ['helloWorld'],
 			'mother' => ['father'],
 			'child' => ['father', 'mother'],
 			'father' => ['mother', 'baby'],
 			'baby' => ['father']
-			));
+			) );
 		$this->expected = array( );
 		$this->result = $this->s->sort();
 
@@ -111,13 +170,6 @@ class SorterTest extends TestCase {
 		unset($this->s);
 	}
 
-	protected function load($arr){
-		$this->s = new Sorter;
-		foreach ($arr as $key => $deps) {
-			$this->s->add($key, $deps);
-		}
-	}
-
 	protected function msg(){
 		return sprintf("Expected: %s\nResult: %s\n", 
 			join(", ", $this->expected), 
@@ -146,5 +198,26 @@ class SorterTest extends TestCase {
 		foreach ($this->s->getMissing() as $key => $value) {
 			_d("\t%s => %s", $key, $value);
 		}
+	}
+}
+
+class SimpleDependable implements  DependableInterface {
+	protected $handle;
+	protected $deps;
+
+	public function __construct($handle, $deps = [])
+	{
+		$this->handle = $handle;
+		$this->deps = $deps;
+	}
+
+	public function getDependencies()
+	{
+		return $this->deps;
+	}
+
+	public function getHandle()
+	{
+		return $this->handle;
 	}
 }

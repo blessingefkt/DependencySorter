@@ -11,21 +11,20 @@ class Sorter implements SortableInterface {
 
 	public function add($item, $_deps = null)
 	{
-		if($item instanceof DependableInterface)
+		if(is_array($item))
 		{
-			$_deps = $item->getDependents();
-			$item = $item->getHandle();
+			foreach ($item as $key => $value) {
+				if(is_int($key))
+					$this->add($value);
+				else
+					$this->add($key, $value);
+			}
 		}
-		elseif(empty($_deps))
+		else
 		{
-			$_deps = [];
+			list($item, $_deps) = $this->prepNewItem($item, $_deps);
+			$this->setItem($item, $_deps);
 		}
-		elseif(is_string($_deps))
-		{
-			$_deps = (array) $_deps;
-		}
-
-		return $this->setItem($item, $_deps);
 	}
 
 	public function sort()
@@ -53,7 +52,7 @@ class Sorter implements SortableInterface {
 		return $this->sorted;
 	}
 
-	protected function setItem($item, $_deps){
+	protected function setItem($item, array $_deps){
 		$this->items[] = $item;
 		foreach ($_deps as $_dep)
 		{
@@ -65,6 +64,29 @@ class Sorter implements SortableInterface {
 		$this->items = array_unique($this->items);
 		$this->dependencies[$item] = $_deps;
 		$this->hits[$item] = 0;
+	}
+
+	protected function prepNewItem($item, $_deps){
+		if($item instanceof DependableInterface)
+		{
+			$_deps = $item->getDependencies();
+			$item = $item->getHandle();
+		}
+		elseif($_deps instanceof DependableInterface)
+		{
+			$_deps = $_deps->getDependencies();
+		}
+
+		if(empty($_deps))
+		{
+			$_deps = [];
+		}
+		elseif(is_string($_deps))
+		{
+			$_deps = (array) preg_split('/,\s?/', $_deps);
+		}
+
+		return [$item, $_deps];
 	}
 
 	protected function satisfied($item)
@@ -100,7 +122,7 @@ class Sorter implements SortableInterface {
 			// unset($_items[$item]);
 		}
 
-			_d("removed\n\t %s", array_keys($this->dependencies));
+		_d("removed\n\t %s", array_keys($this->dependencies));
 	}
 
 	protected function setCircular($item, $item2)
