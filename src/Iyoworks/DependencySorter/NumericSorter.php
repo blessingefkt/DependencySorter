@@ -9,20 +9,20 @@ class Sorter implements SortableInterface {
 	private $hits = [];
 	private $sorted = [];
 
-	public function add(array $items, $allowNumericKey = false)
-	{
-		foreach ($items as $item => $_deps) {
-			if(!$allowNumericKey and is_int($item)) 
-				$this->addItem($_deps);
-			else
-				$this->addItem($item, $_deps);		
-		}
-	}
-
-	public function addItem($item, $_deps = null)
+	public function add($item, $_deps = null)
 	{
 		list($item, $_deps) = $this->prepNewItem($item, $_deps);
 		$this->setItem($item, $_deps);
+	}
+
+	public function addArray(array $item, $allowNumericKey = false)
+	{
+		foreach ($item as $key => $value) {
+			if(!$allowNumericKey and is_int($key)) 
+				$this->add($value);
+			else
+				$this->add($key, $value);		
+		}
 	}
 
 	public function sort()
