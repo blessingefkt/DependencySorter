@@ -194,39 +194,23 @@ class Sorter implements SortableInterface {
 		}
 	}
 
-	/**
-	 * get depenencies of an item
-	 * @return array
-	 */
 	public function getDependents($item)
 	{
 		return $this->dependencies[$item];
 	}
 
-	/**
-	 * get missing msgs
-	 * @return array
-	 */
 	public function getMissing($str = null)
 	{
 		if($str) return $this->missing[$str];
 		return $this->missing;
 	}
 
-	/**
-	 * get circular msgs
-	 * @return array
-	 */
 	public function getCircular($str = null)
 	{
 		if($str) return $this->circular[$str];
 		return $this->circular;
 	}
 
-	/**
-	 * get hit counts
-	 * @return array|int
-	 */
 	public function getHits($str = null)
 	{
 		if($str) return $this->hits[$str];
