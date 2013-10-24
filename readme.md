@@ -67,7 +67,7 @@ Missing dependencies of an item can be retrieved individually
 ```
 $missing = $sorter->getMissing('mother'); 
 ```
-You can check is an item has missing dependencies
+You can check if an item has missing dependencies
 ```
 $sorter->hasMissing($item);
 ```
@@ -107,7 +107,7 @@ The circular dependencies of an item can be retrieved individually
 ```
 $circular = $sorter->getCircular('father'); 
 ```
-You can check is an item has circular dependencies
+You can check if an item has circular dependencies
 ```
 $sorter->hasCircular($item);
 ```
