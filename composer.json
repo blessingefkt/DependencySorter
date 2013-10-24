@@ -7,9 +7,6 @@
 					"email": "iyoworks@gmail.com"
 			}
 		],
-		"require": {
-
-		},
 		"autoload": {
 			"psr-0": {
 				"Iyoworks": "src"
