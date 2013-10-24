@@ -12,13 +12,13 @@ class SorterTest extends TestCase {
 		parent::setUp();
 		$this->s = new Sorter;
 	}
-	
-	public function testStringDepencyList() 
+
+	public function testStringDependencyList() 
 	{
 		$this->s->add( array(
-			'father' => null,
 			'mother' => 'father',
-			'couple' => 'father, mother'
+			'father' => null,
+			'couple' => 'father, mother',
 			) );
 		$this->expected = array(
 			'father',
@@ -32,7 +32,7 @@ class SorterTest extends TestCase {
 		$this->assertSame($this->expected, array_values($this->result), $this->msg());
 	}
 
-	public function testDependableDepencyList() 
+	public function testDependableDependencyList() 
 	{
 		$this->s->add( array(
 			 'father' => new SimpleDependable('father'),
@@ -51,7 +51,7 @@ class SorterTest extends TestCase {
 		$this->assertSame($this->expected, array_values($this->result), $this->msg());
 	}
 
-	public function testDependablesArrayDepencyList() 
+	public function testDependablesArrayDependencyList() 
 	{
 		$this->s->add( array(
 			new SimpleDependable('father'),
@@ -94,11 +94,11 @@ class SorterTest extends TestCase {
 
 		$this->analyze();
 		
-		$this->assertSame($this->expected, array_values($this->result), $this->msg());
-		
 		$this->assertEmpty($this->s->getCircular());
 
-		$this->assertEmpty($this->s->getMissing());
+		$this->assertEmpty($this->s->getMissing(), json_encode($this->s->getMissing(), JSON_PRETTY_PRINT));
+		
+		$this->assertSame($this->expected, array_values($this->result), $this->msg());
 	}
 
 	public function testSortMissingSet() 
@@ -119,8 +119,6 @@ class SorterTest extends TestCase {
 
 		$this->analyze();
 
-		$this->assertSame($this->expected, array_values($this->result), $this->msg());
-
 		$this->assertEmpty($this->s->getCircular());
 
 		$this->assertTrue($this->s->isMissing('mother'));
@@ -128,6 +126,8 @@ class SorterTest extends TestCase {
 		$this->assertTrue($this->s->hasMissing('child'));
 		
 		$this->assertTrue($this->s->hasMissing('family'));
+
+		$this->assertSame($this->expected, array_values($this->result), $this->msg());
 	}
 
 	public function testSortCircularSet() 

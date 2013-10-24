@@ -92,17 +92,27 @@ class Sorter implements SortableInterface {
 		$pass = true;
 		foreach ($this->getDependents($item) as $dep)
 		{
-			if (!$this->isSorted($dep))
+			if ($this->isSorted($dep)) continue;
+			
+			if(!$this->exists($item))
 			{
-				if(!$this->hasDependents($dep))
-					$this->setMissing($item, $dep);
-				$pass = false;
+				$this->setMissing($item, $dep);
+				if($pass) $pass = false;
+			}
+
+			if(!$this->hasDependents($dep))
+			{
+				if($pass) $pass = false;
+			}
+			else 
+			{
+				$this->setFound($item, $dep);
 			}
 
 			if ($this->isDependent($item, $dep))
 			{
 				$this->setCircular($item, $dep);
-				$pass = false;
+				if($pass) $pass = false;
 			}
 		}
 		return $pass;
@@ -113,14 +123,14 @@ class Sorter implements SortableInterface {
 		$this->sorted[] = $item;
 	}
 
+	protected function exists($item)
+	{
+		return isset($this->items[$item]);
+	}
+
 	protected function removeDependents($item)
 	{
 		unset($this->dependencies[$item]);
-		foreach ($this->dependsOn as $_d => &$_items) {
-			// unset($_items[$item]);
-		}
-
-		_d("removed\n\t %s", array_keys($this->dependencies));
 	}
 
 	protected function setCircular($item, $item2)
@@ -131,6 +141,16 @@ class Sorter implements SortableInterface {
 	protected function setMissing($item, $item2)
 	{
 		$this->missing[$item][$item2] = $item2;
+	}
+
+	protected function setFound($item, $item2)
+	{
+		if(isset($this->missing[$item]))
+		{
+			unset($this->missing[$item][$item2]);
+			if(empty($this->missing[$item]))
+				unset($this->missing[$item]);
+		}
 	}
 
 	protected function isSorted($item)
