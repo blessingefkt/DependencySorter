@@ -12,10 +12,10 @@ This package provides 2 interfaces:
 
 Items can be passed to the sorter in a group via `Sorter::add(array)`, or individuallay via `Sorter::addItem(item, dependencies)`.
 
-The provided `Sorter` implementaion can get dependencies from a:
+The provided `Sorter` implementaion can get dependencies from:
 
-- comma delimted string
-- array
+- a comma delimted string
+- an array
 - an object that implements `DependableInterface`
 
 ```
@@ -67,7 +67,7 @@ Missing dependencies of an item can be retrieved individually
 ```
 $missing = $sorter->getMissing('mother'); 
 ```
-You can check is an item has missing dependencies
+You can check if an item has missing dependencies
 ```
 $sorter->hasMissing($item);
 ```
@@ -107,7 +107,7 @@ The circular dependencies of an item can be retrieved individually
 ```
 $circular = $sorter->getCircular('father'); 
 ```
-You can check is an item has circular dependencies
+You can check if an item has circular dependencies
 ```
 $sorter->hasCircular($item);
 ```
