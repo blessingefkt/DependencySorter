@@ -111,7 +111,7 @@ You can check if an item has circular dependencies.
 ```
 $sorter->hasCircular($item);
 ```
-You can also check if an item is a circular dependency.
+You can also check if an item is a circular dependency..
 ```
 $sorter->isCircular($dep);
 ```
