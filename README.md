@@ -103,7 +103,7 @@ Array
         )
 )
 ```
-The circular dependencies of an item can be retrieved individually
+The circular dependencies of an item can be retrieved individually.
 ```
 $circular = $sorter->getCircular('father'); 
 ```
